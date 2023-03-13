@@ -12,7 +12,7 @@ pub fn package(package: &PackageInfo) {
   executable.push(&package.name);
   let mut output_file = target_dir.clone();
   output_file.push(format!("{}-devcade.zip", package.name));
-  let mut file = File::create(output_file).unwrap();
+  let mut file = File::create(&output_file).unwrap();
   let mut writer = ZipWriter::new(&mut file);
   let crate_root = package
     .manifest_path
@@ -81,4 +81,5 @@ pub fn package(package: &PackageInfo) {
   println!("Finished packaging!");
 
   writer.finish().unwrap();
+  println!("Wrote output to {:?}", output_file);
 }
