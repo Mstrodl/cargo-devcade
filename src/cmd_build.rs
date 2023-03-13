@@ -19,6 +19,8 @@ pub fn build(package: &PackageInfo) {
         "target.x86_64-unknown-linux-musl.dockerfile.file={:?}",
         docker_path.to_str().unwrap()
       ),
+      "--config",
+      "term.quiet=false",
     ])
     .status()
     .ok()
