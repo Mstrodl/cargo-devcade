@@ -38,29 +38,47 @@ pub fn package(package: &PackageInfo) {
         .add_directory(relative, FileOptions::default())
         .unwrap();
     } else if entry.file_type().is_file() {
+      println!("Copying asset {relative}...");
       writer.start_file(relative, FileOptions::default()).unwrap();
       let mut file = File::open(entry.path()).unwrap();
       io::copy(&mut file, &mut writer).unwrap();
     }
   }
+  println!("Finished with assets.");
 
   // Write icons
   {
+    println!("Writing store icons...");
     let mut icon_root = crate_root.to_path_buf();
     icon_root.push("store_icons");
     let mut icon = icon_root.clone();
     icon.push("icon.png");
+    let mut banner = icon_root.clone();
+    banner.push("banner.png");
+
+    if !icon.is_file() || !banner.is_file() {
+      eprintln!(
+        "Error: Icons not found. Make sure to populate {:?} with icon.png and banner.png!",
+        icon_root
+      );
+    }
+
     writer
       .start_file("icon.png", FileOptions::default())
       .unwrap();
     io::copy(&mut File::open(icon).unwrap(), &mut writer).unwrap();
-    let mut banner = icon_root.clone();
-    banner.push("banner.png");
     writer
       .start_file("banner.png", FileOptions::default())
       .unwrap();
     io::copy(&mut File::open(banner).unwrap(), &mut writer).unwrap();
   }
+
+  println!("Writing executable...");
+  writer
+    .start_file(format!("publish/{}", package.name), FileOptions::default())
+    .unwrap();
+  io::copy(&mut File::open(executable).unwrap(), &mut writer).unwrap();
+  println!("Finished packaging!");
 
   writer.finish().unwrap();
 }
