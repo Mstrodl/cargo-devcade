@@ -1,12 +1,14 @@
 use clap::Parser;
+use std::env;
 mod cmd_build;
 mod cmd_package;
 mod path_finder;
 use cmd_build::build;
 use cmd_package::package;
 use path_finder::find_package;
+use std::iter::once;
 
-/// Simple program to greet a person
+/// Build tooling for Rusty devcade software
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Args {
@@ -29,7 +31,10 @@ enum Action {
 }
 
 fn main() {
-  let args = Args::parse();
+  let args = match env::args().nth(1).map(|s| s == "devcade") {
+    Some(true) => Args::parse_from(once("cargo devcade".to_owned()).chain(env::args().skip(2))),
+    _ => Args::parse(),
+  };
   let package_info = find_package(&args);
 
   build(&package_info);
