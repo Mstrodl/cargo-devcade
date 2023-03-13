@@ -2,6 +2,9 @@
 name = "cargo-devcade"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+authors = ["Mary Strodl <ipadlover8322@gmail.com>"]
+description = "CLI tool for building and packaging devcade games"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
