@@ -180,7 +180,7 @@ Add these lines to our system to exit on menu button press:
 if devcade_controls.pressed(Player::P1, Button::Exit)
   || devcade_controls.pressed(Player::P2, Button::Exit)
 {
-  std::process::exit();
+  std::process::exit(0);
 }
 ```
 
