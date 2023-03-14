@@ -40,6 +40,10 @@ fn main() {
     _ => Args::parse(),
   };
   let package_info = find_package(&args);
+  if package_info.name.contains('_') {
+    log::error!("The game name contains an underscore. Executables with underscores can't be run.");
+    log::error!("See: https://github.com/ComputerScienceHouse/Devcade-onboard/blob/b5bba2cb5afb75b7383059818caaf18095e7a852/onboard/DevcadeClient.cs#L167");
+  }
 
   build(&package_info);
   if args.action != Action::Build {
