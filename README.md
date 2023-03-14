@@ -17,8 +17,8 @@ Though it's not required, I recommend you use `bevy` and `devcaders` to put stuf
 Once you have `cargo-devcade` installed, we can make a new project:
 
 ```
-cargo new ferris_spinner
-cd ferris_spinner
+cargo new ferris-spinner
+cd ferris-spinner
 ```
 
 Now, let's add some dependencies we'll need:
