@@ -31,7 +31,9 @@ enum Action {
 }
 
 fn main() {
-  env_logger::builder().format_timestamp(None).init();
+  env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("cargo_devcade=info"))
+    .format_timestamp(None)
+    .init();
 
   let args = match env::args().nth(1).map(|s| s == "devcade") {
     Some(true) => Args::parse_from(once("cargo devcade".to_owned()).chain(env::args().skip(2))),
