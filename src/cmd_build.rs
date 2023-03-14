@@ -10,15 +10,15 @@ pub fn build(package: &PackageInfo) {
   }
   Command::new("cross")
     .args([
+      "--config",
+      &format!(
+        "package.metadata.cross.target.x86_64-unknown-linux-gnu.dockerfile.file={:?}",
+        docker_path.to_str().unwrap()
+      ),
       "build",
       "--release",
       "--target",
       "x86_64-unknown-linux-gnu",
-      "--config",
-      &format!(
-        "target.x86_64-unknown-linux-musl.dockerfile.file={:?}",
-        docker_path.to_str().unwrap()
-      ),
       "--config",
       "term.quiet=false",
     ])
