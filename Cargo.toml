@@ -1,6 +1,6 @@
 [package]
 name = "cargo-devcade"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 license = "MIT"
 authors = ["Mary Strodl <ipadlover8322@gmail.com>"]
@@ -11,5 +11,7 @@ description = "CLI tool for building and packaging devcade games"
 [dependencies]
 cargo_metadata = "0.15.3"
 clap = { version = "4.1.8", features = ["derive"] }
+env_logger = "0.10.0"
+log = "0.4.17"
 walkdir = "2.3.2"
 zip = "0.6.4"

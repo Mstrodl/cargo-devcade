@@ -8,13 +8,19 @@ pub fn build(package: &PackageInfo) {
   if !docker_path.is_file() {
     fs::write(&docker_path, include_str!("../Dockerfile.template")).unwrap();
   }
+  let mut cross_path = package.manifest_path.parent().unwrap().to_owned();
+  cross_path.push("Cross.devcade.toml");
+  if !cross_path.is_file() {
+    fs::write(&cross_path, include_str!("../Cross.template.toml")).unwrap();
+  }
   Command::new("cross")
+    .env("CROSS_CONFIG", cross_path.to_str().unwrap())
     .args([
-      "--config",
-      &format!(
-        "package.metadata.cross.target.x86_64-unknown-linux-gnu.dockerfile.file={:?}",
-        docker_path.to_str().unwrap()
-      ),
+      // "--config",
+      // &format!(
+      //   "package.metadata.cross.target.x86_64-unknown-linux-gnu.dockerfile.file={:?}",
+      //   docker_path.to_str().unwrap()
+      // ),
       "build",
       "--release",
       "--target",

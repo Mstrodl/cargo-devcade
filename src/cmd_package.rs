@@ -38,17 +38,17 @@ pub fn package(package: &PackageInfo) {
         .add_directory(relative, FileOptions::default())
         .unwrap();
     } else if entry.file_type().is_file() {
-      println!("Copying asset {relative}...");
+      log::info!("Copying asset {relative}...");
       writer.start_file(relative, FileOptions::default()).unwrap();
       let mut file = File::open(entry.path()).unwrap();
       io::copy(&mut file, &mut writer).unwrap();
     }
   }
-  println!("Finished with assets.");
+  log::info!("Finished with assets.");
 
   // Write icons
   {
-    println!("Writing store icons...");
+    log::info!("Writing store icons...");
     let mut icon_root = crate_root.to_path_buf();
     icon_root.push("store_icons");
     let mut icon = icon_root.clone();
@@ -57,10 +57,11 @@ pub fn package(package: &PackageInfo) {
     banner.push("banner.png");
 
     if !icon.is_file() || !banner.is_file() {
-      eprintln!(
+      log::error!(
         "Error: Icons not found. Make sure to populate {:?} with icon.png and banner.png!",
         icon_root
       );
+      std::process::exit(1);
     }
 
     writer
@@ -73,13 +74,15 @@ pub fn package(package: &PackageInfo) {
     io::copy(&mut File::open(banner).unwrap(), &mut writer).unwrap();
   }
 
-  println!("Writing executable...");
+  log::info!("Writing executable...");
   writer
     .start_file(format!("publish/{}", package.name), FileOptions::default())
     .unwrap();
   io::copy(&mut File::open(executable).unwrap(), &mut writer).unwrap();
-  println!("Finished packaging!");
+  log::info!("Finished packaging!");
 
   writer.finish().unwrap();
-  println!("Wrote output to {:?}", output_file);
+
+  println!();
+  log::info!("Wrote output to {}", output_file.to_str().unwrap());
 }
