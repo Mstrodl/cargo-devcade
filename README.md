@@ -57,7 +57,7 @@ If it didn't work, maybe you hit a bug... Or more likely you set it up wrong!
 Bevy is pretty neat, here's a tiny game we can try with:
 
 ```
-use bevy::prelude::*;
+use bevy::{prelude::*, window::WindowMode};
 
 fn main() {
   App::new()
