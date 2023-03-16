@@ -79,6 +79,14 @@ pub fn package(package: &PackageInfo) {
     .start_file(format!("publish/{}", package.name), FileOptions::default())
     .unwrap();
   io::copy(&mut File::open(executable).unwrap(), &mut writer).unwrap();
+
+  writer
+    .start_file(
+      format!("publish/{}.runtimeconfig.json", package.name),
+      FileOptions::default(),
+    )
+    .unwrap();
+
   log::info!("Finished packaging!");
 
   writer.finish().unwrap();
