@@ -110,6 +110,7 @@ pub fn package(package: &PackageInfo) {
       .start_file("banner.png", FileOptions::default())
       .unwrap();
     if banner.is_file() {
+      // TODO: Yell at user if wrong dimensions
       io::copy(&mut File::open(banner).unwrap(), &mut writer).unwrap();
     } else {
       log::warn!(

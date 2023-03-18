@@ -2,9 +2,11 @@ use clap::Parser;
 use std::env;
 mod cmd_build;
 mod cmd_package;
+mod cmd_publish;
 mod path_finder;
 use cmd_build::build;
 use cmd_package::package;
+use cmd_publish::publish;
 use path_finder::find_package;
 use std::iter::once;
 
@@ -46,6 +48,6 @@ fn main() {
     package(&package_info);
   }
   if Action::Publish == args.action {
-    // publish(&args);
+    publish(&args);
   }
 }
