@@ -7,6 +7,7 @@ pub struct PackageInfo {
   pub name: String,
   pub target_directory: PathBuf,
   pub manifest_path: PathBuf,
+  pub has_devcade_feature: bool,
 }
 
 pub fn find_package(args: &Args) -> PackageInfo {
@@ -19,6 +20,7 @@ pub fn find_package(args: &Args) -> PackageInfo {
     .filter(|package| workspaces.contains(&package.id))
     .flat_map(|package| {
       let default_run = package.default_run.as_ref();
+      let has_devcade_feature = package.features.contains_key("devcade");
       package
         .targets
         .into_iter()
@@ -27,17 +29,19 @@ pub fn find_package(args: &Args) -> PackageInfo {
           Some(bin) => &target.name == bin,
           None => default_run.map_or(true, |name| name == &target.name),
         })
-        .map(|target| (target, package.manifest_path.clone()))
+        .map(|target| (target, package.manifest_path.clone(), has_devcade_feature))
         .collect::<Vec<_>>()
     })
     .collect::<Vec<_>>();
   if targets.len() != 1 {
-    panic!("Too many possible binaries to run... Maybe you want to pass `--bin`?");
+    log::error!("Too many possible binaries to run... Maybe you want to pass `--bin`?");
+    todo!();
   }
-  let (target, manifest_path) = targets[0].clone();
+  let (target, manifest_path, has_devcade_feature) = targets[0].clone();
   PackageInfo {
     name: target.name,
     target_directory: metadata.target_directory.into(),
     manifest_path: manifest_path.into(),
+    has_devcade_feature,
   }
 }

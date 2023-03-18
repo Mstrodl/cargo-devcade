@@ -25,6 +25,13 @@ pub fn build(package: &PackageInfo) {
       "--release",
       "--target",
       "x86_64-unknown-linux-gnu",
+      "--features",
+      if package.has_devcade_feature {
+        "devcade"
+      } else {
+        ""
+      },
+      "--no-default-features",
       "--config",
       "term.quiet=false",
     ])
