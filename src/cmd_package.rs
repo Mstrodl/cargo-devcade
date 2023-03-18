@@ -83,6 +83,10 @@ pub fn package(package: &PackageInfo) {
     if icon.is_file() {
       io::copy(&mut File::open(icon).unwrap(), &mut writer).unwrap();
     } else {
+      log::warn!(
+        "Couldn't find icon (Searched: `{}`), generating one for you",
+        banner.to_str().unwrap()
+      );
       let img_width: i32 = 512;
       let scale = Scale::uniform(img_width as f32 / ((package.name.len() as f32 / 1.5) * 0.8));
       let (width, height) = imageproc::drawing::text_size(scale, &FONT, &package.name);
@@ -108,6 +112,10 @@ pub fn package(package: &PackageInfo) {
     if banner.is_file() {
       io::copy(&mut File::open(banner).unwrap(), &mut writer).unwrap();
     } else {
+      log::warn!(
+        "Couldn't find banner (Searched: `{}`), generating one for you",
+        banner.to_str().unwrap()
+      );
       let img_width: i32 = 800;
       let img_height: i32 = 450;
       let scale = Scale::uniform(cmp::min_by(
