@@ -16,14 +16,14 @@ Though it's not required, I recommend you use `bevy` and `devcaders` to put stuf
 ## Project setup
 Once you have `cargo-devcade` installed, we can make a new project:
 
-```
+```bash
 cargo new ferris-spinner
 cd ferris-spinner
 ```
 
 Now, let's add some dependencies we'll need:
 
-```
+```bash
 cargo add bevy devcaders
 ```
 
@@ -34,7 +34,7 @@ cargo add bevy devcaders
 
 Oh, and don't forget the icons! `icon.png` and `banner.png` should exist in the `store_icons` folder of your crate root:
 
-```
+```bash
 mkdir store_icons
 curl https://placehold.it/800x450.png -Lo store_icons/banner.png
 curl https://placehold.it/512x512.png -Lo store_icons/icon.png
@@ -44,7 +44,7 @@ curl https://placehold.it/512x512.png -Lo store_icons/icon.png
 
 Before we do anything else, let's do a test build to make our project is set up properly:
 
-```
+```bash
 cargo devcade package
 ```
 
@@ -56,7 +56,7 @@ If it didn't work, maybe you hit a bug... Or more likely you set it up wrong!
 
 Bevy is pretty neat, here's a tiny game we can try with:
 
-```
+```rs
 use bevy::{prelude::*, window::WindowMode};
 
 fn main() {
@@ -84,7 +84,7 @@ fn hello_world_system() {
 
 Cool, let's give it a run:
 
-```
+```bash
 cargo run
 ```
 
@@ -96,14 +96,14 @@ That's because we're not drawing anything yet!
 
 Let's grab some pictures from the interwebz to use in our game:
 
-```
+```bash
 mkdir assets
 curl https://rustacean.net/assets/rustacean-flat-happy.png -o assets/ferris.png
 ```
 
 Cool! Now let's make a camera and a ferris at startup:
 
-```
+```rs
 #[derive(Component)]
 struct Ferris {}
 
@@ -128,11 +128,19 @@ And now:
 cargo run
 ```
 
+You should see a crab on your screen. If you don't and got some kind of error... Open an issue?
+
+An interesting bevy pattern showed up here, did you spot it?
+
+### Markers
+
+In bevy, sometimes we link a dummy component (in this case `Ferris`) so it can be looked-up later. We'll see some of that syntax in the next step
+
 ## What if the crab actually... Did something?
 
 Hey, this is cool, but what if we could move the crab around?
 
-```
+```rs
 fn hello_world_system(mut sprite_position: Query<(&mut Ferris, &mut Transform)>) {
   for (_, mut transform) in &mut sprite_position {
     transform.translation.x -= 1.0;
@@ -145,7 +153,7 @@ But uh... What if we could actually control it?
 
 Hmm... But how? Maybe that `devcaders` library we added earlier could help us...
 
-```
+```rs
 use devcaders::{DevcadeControls, Player, Button};
 
 fn hello_world_system(
@@ -167,6 +175,8 @@ fn hello_world_system(
 
 Cool! Now our crab moves when we move the joystick.
 
+For a full list of controls and their meanings, check [devcaders' `Button` enum](https://docs.rs/devcaders/latest/devcaders/enum.Button.html)
+
 If you don't have a controller attached, you can use the `V` and `N` keys instead!
 
 For more information, or to learn more, visit [bevyengine.org](https://bevyengine.org/)!
@@ -175,8 +185,8 @@ For more information, or to learn more, visit [bevyengine.org](https://bevyengin
 
 So... We should make it possible to exit.
 
-Add these lines to our system to exit on menu button press:
-```
+Add these lines to our system to exit on menu button press (by either player!):
+```rs
 if devcade_controls.pressed(Player::P1, Button::Menu)
   || devcade_controls.pressed(Player::P2, Button::Menu)
 {
