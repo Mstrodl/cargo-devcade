@@ -71,6 +71,11 @@ pub fn package(package: &PackageInfo) {
   }
   log::info!("Finished with assets.");
 
+  let mut icon_path = target_dir.clone();
+  icon_path.push(format!("{}-icon.png", package.name));
+  let mut banner_path = target_dir.clone();
+  banner_path.push(format!("{}-banner.png", package.name));
+
   // Write icons
   {
     log::info!("Writing store icons...");
@@ -81,9 +86,7 @@ pub fn package(package: &PackageInfo) {
     let mut banner = icon_root.clone();
     banner.push("banner.png");
 
-    writer
-      .start_file("icon.png", FileOptions::default())
-      .unwrap();
+    let mut file = File::create(&icon_path).expect("Couldn't create icon file");
     if icon.is_file() {
       let mut reader = File::open(icon).unwrap();
       let buf_reader = BufReader::new(reader.try_clone().unwrap());
@@ -96,7 +99,7 @@ pub fn package(package: &PackageInfo) {
           dimensions
         );
       }
-      io::copy(&mut reader, &mut writer).unwrap();
+      io::copy(&mut reader, &mut file).unwrap();
     } else {
       log::warn!(
         "Couldn't find icon (Searched: `{}`), generating one for you",
@@ -119,11 +122,12 @@ pub fn package(package: &PackageInfo) {
       image
         .write_to(&mut Cursor::new(&mut png), ImageFormat::Png)
         .unwrap();
-      io::copy(&mut Cursor::new(&mut png), &mut writer).unwrap();
+      io::copy(&mut Cursor::new(&mut png), &mut file).unwrap();
     }
-    writer
-      .start_file("banner.png", FileOptions::default())
-      .unwrap();
+    std::mem::drop(file);
+
+    let mut file = File::create(&banner_path).expect("Couldn't create banner file");
+
     if banner.is_file() {
       let mut reader = File::open(banner).unwrap();
       let buf_reader = BufReader::new(reader.try_clone().unwrap());
@@ -137,7 +141,7 @@ pub fn package(package: &PackageInfo) {
           BANNER_DIMENSIONS
         );
       }
-      io::copy(&mut reader, &mut writer).unwrap();
+      io::copy(&mut reader, &mut file).unwrap();
     } else {
       log::warn!(
         "Couldn't find banner (Searched: `{}`), generating one for you",
@@ -164,7 +168,7 @@ pub fn package(package: &PackageInfo) {
       image
         .write_to(&mut Cursor::new(&mut png), ImageFormat::Png)
         .unwrap();
-      io::copy(&mut Cursor::new(&mut png), &mut writer).unwrap();
+      io::copy(&mut Cursor::new(&mut png), &mut file).unwrap();
     }
   }
 
@@ -186,6 +190,9 @@ pub fn package(package: &PackageInfo) {
 
   writer.finish().unwrap();
 
-  println!();
-  log::info!("Wrote output to {}", output_file.to_str().unwrap());
+  log::info!("Wrote output to {}", target_dir.to_str().unwrap());
+  log::info!("Upload the following files:");
+  log::info!("  - {}", output_file.to_str().unwrap());
+  log::info!("  - {}", icon_path.to_str().unwrap());
+  log::info!("  - {}", banner_path.to_str().unwrap());
 }
